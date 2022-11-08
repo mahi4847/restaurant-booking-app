@@ -1,24 +1,26 @@
 package com.demoapp.restaurantbookingapp;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.demoapp.restaurantbookingapp.controller.RestaurantBookingController;
+import com.demoapp.restaurantbookingapp.rest.ResourcesHandler;
 
 import io.muserver.MuServer;
 import io.muserver.MuServerBuilder;
-import io.muserver.rest.RestHandlerBuilder;
 
-@SpringBootApplication
 public class RestaurantBookingAppApplication {
+	
+	 private final static Logger logger = LoggerFactory.getLogger(RestaurantBookingAppApplication.class);
 
 	public static void main(String[] args) {
 
-		RestaurantBookingController controller = new RestaurantBookingController();
-		MuServer server = MuServerBuilder.httpServer()
-	            .addHandler(RestHandlerBuilder.restHandler(controller))
-	            .start();
-
-		System.out.println("API example: " + server.uri());
+		 MuServer server = MuServerBuilder.httpServer()
+	                .addHandler(ResourcesHandler.createRestHandler())
+	                .withHttpPort(10088)
+	                .start();
+	        logger.info("Started server at {}", server.uri());
+	        logger.info("API HTML: {}" , server.uri().resolve("/api.html"));
+	        logger.info("API JSON: {}" , server.uri().resolve("/openapi.json"));
 
 	}
 }
